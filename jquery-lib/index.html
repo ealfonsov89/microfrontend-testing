@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table id="jquery-wc-table">
+        <thead>
+            <th>id</th>
+            <th>name</th>
+            <th>address</th>
+            <th>date</th>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
+    <script src="https://rawgit.com/Marak/faker.js/master/examples/browser/js/faker.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        faker.seed(1);
+        const data = new Array(20).fill({}).map(() => ({
+            id: faker.random.uuid(),
+            name: faker.name.firstName(),
+            address: faker.address.streetAddress(),
+            date: faker.date.past()
+        }));
+        const urlParams = new URLSearchParams(window.location.search);
+        $(document).ready(() => {
+            const filterData = data.filter(dataItem => {
+                return !urlParams.has('name') || dataItem.name.toLowerCase().trim().includes(urlParams.get('name').toLowerCase().trim());
+            });
+            const table = $('#jquery-wc-table tbody');
+            table.find('td')
+                .remove()
+                .end();
+            filterData.forEach(dataItem => {
+                const row = table.append('<tr></tr>');
+                row.append(`<td>${ dataItem.id }</td>`); 
+                row.append(`<td>${ dataItem.name }</td>`); 
+                row.append(`<td><address>${ dataItem.address }</address></td>`); 
+                row.append(`<td>${ dataItem.date.toISOString() }</td>`); 
+            })
+        });
+    </script>
+</body>
+</html>
